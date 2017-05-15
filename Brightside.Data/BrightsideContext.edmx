@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BrightsideModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ArticleMetadata">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ArticleId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Data" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Success" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Articles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Score" Type="float" />
+          <Property Name="SourceFeedId" Type="int" Nullable="false" />
+          <Property Name="PublicationDate" Type="datetime" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="URL" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="HasBeenScored" Type="bit" Nullable="false" />
+          <Property Name="MetadataPopulated" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SourceFeeds">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Score" Type="float" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="URL" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="SourceId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SourceFeedsHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SourceFeedId" Type="int" Nullable="false" />
+          <Property Name="LastRetrievedTimestamp" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Sources">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShortName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="HomeUrl" Type="nvarchar" MaxLength="250" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK_Article_SourceFeeds">
+          <End Role="SourceFeeds" Type="Self.SourceFeeds" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Articles" Type="Self.Articles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SourceFeeds">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Articles">
+              <PropertyRef Name="SourceFeedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ArticleMetadata_Articles">
+          <End Role="Articles" Type="Self.Articles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ArticleMetadata" Type="Self.ArticleMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Articles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArticleMetadata">
+              <PropertyRef Name="ArticleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SourceFeeds_Sources">
+          <End Role="Sources" Type="Self.Sources" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SourceFeeds" Type="Self.SourceFeeds" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sources">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SourceFeeds">
+              <PropertyRef Name="SourceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SourceFeedsHistory_SourceFeeds">
+          <End Role="SourceFeeds" Type="Self.SourceFeeds" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SourceFeedsHistory" Type="Self.SourceFeedsHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SourceFeeds">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SourceFeedsHistory">
+              <PropertyRef Name="SourceFeedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="SP_NextSourceFeedToGet" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="BrightsideModelStoreContainer">
+          <EntitySet Name="ArticleMetadata" EntityType="Self.ArticleMetadata" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Articles" EntityType="Self.Articles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SourceFeeds" EntityType="Self.SourceFeeds" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SourceFeedsHistory" EntityType="Self.SourceFeedsHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sources" EntityType="Self.Sources" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Article_SourceFeeds" Association="Self.FK_Article_SourceFeeds">
+            <End Role="SourceFeeds" EntitySet="SourceFeeds" />
+            <End Role="Articles" EntitySet="Articles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ArticleMetadata_Articles" Association="Self.FK_ArticleMetadata_Articles">
+            <End Role="Articles" EntitySet="Articles" />
+            <End Role="ArticleMetadata" EntitySet="ArticleMetadata" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SourceFeeds_Sources" Association="Self.FK_SourceFeeds_Sources">
+            <End Role="Sources" EntitySet="Sources" />
+            <End Role="SourceFeeds" EntitySet="SourceFeeds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SourceFeedsHistory_SourceFeeds" Association="Self.FK_SourceFeedsHistory_SourceFeeds">
+            <End Role="SourceFeeds" EntitySet="SourceFeeds" />
+            <End Role="SourceFeedsHistory" EntitySet="SourceFeedsHistory" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BrightsideModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="BrightsideEntities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="SP_NextSourceFeedToGet" ReturnType="Collection(BrightsideModel.SP_NextSourceFeedToGet_Result)" />
+          <EntitySet Name="Articles" EntityType="BrightsideModel.Article" />
+          <EntitySet Name="SourceFeeds" EntityType="BrightsideModel.SourceFeed" />
+          <EntitySet Name="SourceFeedsHistories" EntityType="BrightsideModel.SourceFeedsHistory" />
+          <EntitySet Name="Sources" EntityType="BrightsideModel.Source" />
+          <AssociationSet Name="FK_Article_SourceFeeds" Association="BrightsideModel.FK_Article_SourceFeeds">
+            <End Role="SourceFeed" EntitySet="SourceFeeds" />
+            <End Role="Article" EntitySet="Articles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SourceFeeds_Sources" Association="BrightsideModel.FK_SourceFeeds_Sources">
+            <End Role="Source" EntitySet="Sources" />
+            <End Role="SourceFeed" EntitySet="SourceFeeds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SourceFeedsHistory_SourceFeeds" Association="BrightsideModel.FK_SourceFeedsHistory_SourceFeeds">
+            <End Role="SourceFeed" EntitySet="SourceFeeds" />
+            <End Role="SourceFeedsHistory" EntitySet="SourceFeedsHistories" />
+          </AssociationSet>
+          <EntitySet Name="ArticleMetadatas" EntityType="BrightsideModel.ArticleMetadata" />
+          <AssociationSet Name="FK_ArticleMetadata_Articles" Association="BrightsideModel.FK_ArticleMetadata_Articles">
+            <End Role="Article" EntitySet="Articles" />
+            <End Role="ArticleMetadata" EntitySet="ArticleMetadatas" />
+          </AssociationSet>
+          <EntitySet Name="sysdiagrams" EntityType="BrightsideModel.sysdiagram" />
+          </EntityContainer>
+        <ComplexType Name="SP_NextSourceFeedToGet_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Double" Name="Score" Nullable="false" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="URL" Nullable="false" MaxLength="250" />
+          <Property Type="Int32" Name="SourceId" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="Article">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Score" Type="Double" />
+          <Property Name="SourceFeedId" Type="Int32" Nullable="false" />
+          <Property Name="PublicationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SourceFeed" Relationship="BrightsideModel.FK_Article_SourceFeeds" FromRole="Article" ToRole="SourceFeed" />
+          <Property Name="HasBeenScored" Type="Boolean" Nullable="false" />
+          <Property Name="MetadataPopulated" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ArticleMetadatas" Relationship="BrightsideModel.FK_ArticleMetadata_Articles" FromRole="Article" ToRole="ArticleMetadata" />
+        </EntityType>
+        <EntityType Name="SourceFeed">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Score" Type="Double" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SourceId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Articles" Relationship="BrightsideModel.FK_Article_SourceFeeds" FromRole="SourceFeed" ToRole="Article" />
+          <NavigationProperty Name="Source" Relationship="BrightsideModel.FK_SourceFeeds_Sources" FromRole="SourceFeed" ToRole="Source" />
+          <NavigationProperty Name="SourceFeedsHistories" Relationship="BrightsideModel.FK_SourceFeedsHistory_SourceFeeds" FromRole="SourceFeed" ToRole="SourceFeedsHistory" />
+        </EntityType>
+        <EntityType Name="SourceFeedsHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SourceFeedId" Type="Int32" Nullable="false" />
+          <Property Name="LastRetrievedTimestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="SourceFeed" Relationship="BrightsideModel.FK_SourceFeedsHistory_SourceFeeds" FromRole="SourceFeedsHistory" ToRole="SourceFeed" />
+        </EntityType>
+        <EntityType Name="Source">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShortName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HomeUrl" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SourceFeeds" Relationship="BrightsideModel.FK_SourceFeeds_Sources" FromRole="Source" ToRole="SourceFeed" />
+        </EntityType>
+        <Association Name="FK_Article_SourceFeeds">
+          <End Type="BrightsideModel.SourceFeed" Role="SourceFeed" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BrightsideModel.Article" Role="Article" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SourceFeed">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Article">
+              <PropertyRef Name="SourceFeedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SourceFeeds_Sources">
+          <End Type="BrightsideModel.Source" Role="Source" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BrightsideModel.SourceFeed" Role="SourceFeed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Source">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SourceFeed">
+              <PropertyRef Name="SourceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SourceFeedsHistory_SourceFeeds">
+          <End Type="BrightsideModel.SourceFeed" Role="SourceFeed" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BrightsideModel.SourceFeedsHistory" Role="SourceFeedsHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SourceFeed">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SourceFeedsHistory">
+              <PropertyRef Name="SourceFeedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ArticleMetadata">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ArticleId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Data" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Article" Relationship="BrightsideModel.FK_ArticleMetadata_Articles" FromRole="ArticleMetadata" ToRole="Article" />
+          <Property Name="Success" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ArticleMetadata_Articles">
+          <End Type="BrightsideModel.Article" Role="Article" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BrightsideModel.ArticleMetadata" Role="ArticleMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Article">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ArticleMetadata">
+              <PropertyRef Name="ArticleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BrightsideModelStoreContainer" CdmEntityContainer="BrightsideEntities">
+          <FunctionImportMapping FunctionImportName="SP_NextSourceFeedToGet" FunctionName="BrightsideModel.Store.SP_NextSourceFeedToGet">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BrightsideModel.SP_NextSourceFeedToGet_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="SourceId" ColumnName="SourceId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Articles">
+            <EntityTypeMapping TypeName="BrightsideModel.Article">
+              <MappingFragment StoreEntitySet="Articles">
+                <ScalarProperty Name="MetadataPopulated" ColumnName="MetadataPopulated" />
+                <ScalarProperty Name="HasBeenScored" ColumnName="HasBeenScored" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PublicationDate" ColumnName="PublicationDate" />
+                <ScalarProperty Name="SourceFeedId" ColumnName="SourceFeedId" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SourceFeeds">
+            <EntityTypeMapping TypeName="BrightsideModel.SourceFeed">
+              <MappingFragment StoreEntitySet="SourceFeeds">
+                <ScalarProperty Name="SourceId" ColumnName="SourceId" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SourceFeedsHistories">
+            <EntityTypeMapping TypeName="BrightsideModel.SourceFeedsHistory">
+              <MappingFragment StoreEntitySet="SourceFeedsHistory">
+                <ScalarProperty Name="LastRetrievedTimestamp" ColumnName="LastRetrievedTimestamp" />
+                <ScalarProperty Name="SourceFeedId" ColumnName="SourceFeedId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sources">
+            <EntityTypeMapping TypeName="BrightsideModel.Source">
+              <MappingFragment StoreEntitySet="Sources">
+                <ScalarProperty Name="HomeUrl" ColumnName="HomeUrl" />
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ArticleMetadatas">
+            <EntityTypeMapping TypeName="BrightsideModel.ArticleMetadata">
+              <MappingFragment StoreEntitySet="ArticleMetadata">
+                <ScalarProperty Name="Success" ColumnName="Success" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ArticleId" ColumnName="ArticleId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="BrightsideModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

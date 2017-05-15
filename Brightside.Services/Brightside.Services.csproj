@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{110FB8F2-C502-47C5-AFB4-1340DD65B985}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Brightside.Services</RootNamespace>
+    <AssemblyName>Brightside.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Implementations\MetadataService.cs" />
+    <Compile Include="Implementations\ScoringService.cs" />
+    <Compile Include="Implementations\ServiceBase.cs" />
+    <Compile Include="Implementations\SourceFeedService.cs" />
+    <Compile Include="Interfaces\IMetadataService.cs" />
+    <Compile Include="Interfaces\IScoringService.cs" />
+    <Compile Include="Interfaces\ISourceFeedService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brightside.Common\Brightside.Common.csproj">
+      <Project>{50d0a515-3386-4d29-bd79-5ac02ae85261}</Project>
+      <Name>Brightside.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brightside.Data\Brightside.Data.csproj">
+      <Project>{74c19916-c770-4775-8d71-93fc9a17f994}</Project>
+      <Name>Brightside.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brightside.MetadataGatherers\Brightside.MetadataGatherers.csproj">
+      <Project>{10995179-f354-4e5e-9142-2c3f63f808a3}</Project>
+      <Name>Brightside.MetadataGatherers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brightside.Schemas\Brightside.Schemas.csproj">
+      <Project>{9783F338-5002-4EDF-A990-29117ED8CF16}</Project>
+      <Name>Brightside.Schemas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brightside.Scorer\Brightside.Scorer.csproj">
+      <Project>{C2B2D09F-7A2C-4001-96EF-34E9606A6BDB}</Project>
+      <Name>Brightside.Scorer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

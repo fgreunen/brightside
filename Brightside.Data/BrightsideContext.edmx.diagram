@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0792a3023a74417ab8c2d02ba83099a6" Name="Diagram1">
+        <EntityTypeShape EntityType="BrightsideModel.Article" Width="1.5" PointX="5.25" PointY="1.125" />
+        <EntityTypeShape EntityType="BrightsideModel.SourceFeed" Width="1.5" PointX="3" PointY="2.375" />
+        <EntityTypeShape EntityType="BrightsideModel.SourceFeedsHistory" Width="1.5" PointX="5.25" PointY="4.375" />
+        <EntityTypeShape EntityType="BrightsideModel.Source" Width="1.5" PointX="0.75" PointY="2.75" />
+        <AssociationConnector Association="BrightsideModel.FK_Article_SourceFeeds" />
+        <AssociationConnector Association="BrightsideModel.FK_SourceFeeds_Sources" />
+        <AssociationConnector Association="BrightsideModel.FK_SourceFeedsHistory_SourceFeeds" />
+        <EntityTypeShape EntityType="BrightsideModel.ArticleMetadata" Width="1.5" PointX="7.5" PointY="1.75" />
+        <AssociationConnector Association="BrightsideModel.FK_ArticleMetadata_Articles" />
+        <EntityTypeShape EntityType="BrightsideModel.sysdiagram" Width="1.5" PointX="0.75" PointY="5.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
